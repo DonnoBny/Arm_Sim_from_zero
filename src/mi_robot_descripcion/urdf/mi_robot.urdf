@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<robot name="rover_arm_v1">
+
+  <!-- ****************** DECLARACIÓN DE LINKS (Descripcion de cada uno de los elementos) ****************** -->
+
+  <!-- Cuerpo del ROVER-->
+  <link name="core_link">  <!-- Nombre del elemento del brazo-->
+    <visual>  
+      <geometry>
+        <box size="0.8 0.6 0.05"/>  <!-- Dimensiones del elemento, en este caso se hace uso de un tipo box, con medidas 0.8x 0.6y 0.05z -->
+      </geometry>
+      <material name="gray"> <!-- Color del elemento-->
+        <color rgba="0.5 0.5 0.5 1.0"/>   <!-- Color en formato RGBA (Red, Green, Blue, Alpha)-->
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+         <box size="0.8 0.6 0.05"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <!-- Base rotacional-->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>  <!-- Dimensiones del elemento, en este caso se hace uso de un tipo cilindro, con medidas 0.05 altura y 0.2 radio -->
+      </geometry>
+      <!-- Posición relativa del elemento respecto al origen del sistema de coordenadas (x,y,z) (en metros) y orientación (roll, pitch, yaw) (en radianes)-->
+      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.2"/>
+      </geometry>
+      <origin xyz="0 0 0.025" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <!-- Eslabones del brazo -->
+  <link name="eslabon_1_link">
+    <visual>
+      <geometry>
+        <box size="0.4 0.05 0.05"/>
+      </geometry>
+      <origin xyz="0.15 0 0.025" rpy="0 0 0"/>
+      <material name="blue">
+        <color rgba="0.0 0.0 0.8 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.4 0.05 0.05"/>
+      </geometry>
+      <origin xyz="0.15 0 0.025" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <link name="eslabon_2_link">
+    <visual>
+      <geometry>
+        <box size="0.3 0.05 0.05"/>
+      </geometry>
+      <origin xyz="0.15 0 0" rpy="0 0 0"/>
+      <material name="red">
+        <color rgba="0.8 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.3 0.05 0.05"/>
+      </geometry>
+      <origin xyz="0.15 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <link name="eslabon_3_link">
+    <visual>
+      <geometry>
+        <box size="0.3 0.05 0.05"/>
+      </geometry>
+      <origin xyz="0.15 0 0" rpy="0 0 0"/>
+      <material name="green">
+        <color rgba="0.0 0.8 0.0 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.3 0.05 0.05"/>
+      </geometry>
+      <origin xyz="0.15 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <!-- Gripper -->
+  <link name="pinza_base_link">
+    <visual>
+      <geometry>
+        <box size="0.08 0.1 0.08"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="dedo_izquierdo_link">
+    <visual>
+      <geometry>
+        <box size="0.09 0.015 0.09"/>
+      </geometry>
+      <origin xyz="0.025 0 0"/>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <link name="dedo_derecho_link">
+    <visual>
+      <geometry>
+        <box size="0.09 0.015 0.09"/>
+      </geometry>
+      <origin xyz="0.025 0 0"/>
+      <material name="gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+
+   <!-- ****************** DECLARACIÓN DE JOINTS (Descripcion la union entre los elementos) ****************** -->
+
+  <!-- Core - Base -->
+  <joint name="motor_1_joint" type="revolute">  <!-- Nombre de union y tipo de articulación, en este caso revolutiva (cilindrica)-->
+    <parent link="core_link"/>  <!-- Desde que elemento se une-->
+    <child link="base_link"/> <!-- Hacia que elemento se une-->
+    <origin xyz="0 0 0.025" rpy="0 0 0"/> <!-- Posición relativa entre ambos elementos (x,y,z) y orientación (roll, pitch, yaw)-->
+    <axis xyz="0 0 1"/> <!-- Eje de rotación (x,y,z), en este caso solo en el eje z-->
+    <limit lower="-3.14" upper="3.14" velocity="0.5" effort="10"/> <!-- Límites de la articulación: ángulo mínimo y máximo (radianes), velocidad máxima (rad/s) y esfuerzo máximo (Nm)-->
+  </joint>
+
+  <!-- Base - Eslabones -->
+  <joint name="motor_2_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="eslabon_1_link"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.1" upper="0" velocity="0.5" effort="10"/>
+  </joint>
+
+  <joint name="motor_3_joint" type="revolute">
+    <parent link="eslabon_1_link"/>
+    <child link="eslabon_2_link"/>
+    <origin xyz="0.35 0 0" rpy="0 -2.35619 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14" upper="3.14" velocity="0.5" effort="10"/>
+  </joint>
+
+  <joint name="motor_4_joint" type="revolute">
+    <parent link="eslabon_2_link"/>
+    <child link="eslabon_3_link"/>
+    <origin xyz="0.3 0 0" rpy="0 -1 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-3.14" upper="3.14" velocity="0.5" effort="10"/>
+  </joint>
+
+  <!-- Eslabon final - Gripper -->
+  <joint name="muneca_5_joint" type="revolute">
+    <parent link="eslabon_3_link"/>
+    <child link="pinza_base_link"/>
+    <origin xyz="0.3 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.57" upper="1.57" velocity="0.5" effort="10"/>
+  </joint>
+
+  <joint name="dedo_izquierdo_joint" type="prismatic">
+    <parent link="pinza_base_link"/>
+    <child link="dedo_izquierdo_link"/>
+    <origin xyz="0 0.05 0.015" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="0.0" upper="0.03" velocity="1.0" effort="10"/>
+  </joint>
+
+  <joint name="dedo_derecho_joint" type="prismatic">
+    <parent link="pinza_base_link"/>
+    <child link="dedo_derecho_link"/>
+    <origin xyz="0 -0.05 0.015" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="0.03" velocity="1.0" effort="10"/>
+  </joint>
+
+</robot>
